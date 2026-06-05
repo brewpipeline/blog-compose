@@ -7,7 +7,8 @@
 #   IMAGES_HMAC_SECRET  secret used to sign image URLs; one value shared by both
 #                       services below, so they always match
 #
-# Optional (have defaults): POSTGRES_PASSWORD, BLOG_PORT (8080), IMAGES_PORT (8081),
+# Optional (have defaults): SCHEME (https — set to http for non-TLS deploys),
+#   POSTGRES_PASSWORD, BLOG_PORT (8080), IMAGES_PORT (8081),
 #   BLOG_SERVER_REF / IMAGES_PROCESSOR_REF (main), FEATURES, TITLE, DESCRIPTION,
 #   KEYWORDS, TELEGRAM_BOT_TOKEN, TELEGRAM_BOT_LOGIN, YANDEX_CLIENT_ID, OPENAI_API_KEY,
 #   RABBIT_URL, LOGO_URL, THEME, COLOR_*.
@@ -48,6 +49,7 @@ services:
       context: https://github.com/tikitko/images-processor-service.git#${IMAGES_PROCESSOR_REF:-main}
       args:
         DOMAIN: ${IMAGES_DOMAIN:?IMAGES_DOMAIN is required}
+        SCHEME: ${SCHEME:-https}
     restart: *restart
     logging: *logging
     networks: [internal]
@@ -65,6 +67,7 @@ services:
       context: https://github.com/tikitko/blog-server.git#${BLOG_SERVER_REF:-main}
       args:
         DOMAIN: ${BLOG_DOMAIN:?BLOG_DOMAIN is required}
+        SCHEME: ${SCHEME:-https}
         FEATURES: ${FEATURES:-telegram,chatgpt,lang_ru}
         TITLE: ${TITLE:-TIKITKO blog}
         DESCRIPTION: '${DESCRIPTION:-Блог от «гиков» для «гиков», говорим на темы, начиная с программирования и компьютерной графики, заканчивая играми и алкогольными посиделками в одиночестве.}'
@@ -89,7 +92,7 @@ services:
       RABBIT_URL: ${RABBIT_URL:-placeholder}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      IMAGES_PROCESSOR_URL: https://${IMAGES_DOMAIN}/
+      IMAGES_PROCESSOR_URL: ${SCHEME:-https}://${IMAGES_DOMAIN}/
       IMAGES_HMAC_SECRET: ${IMAGES_HMAC_SECRET:?IMAGES_HMAC_SECRET is required}
     ports:
       - "${BLOG_PORT:-8080}:80"
