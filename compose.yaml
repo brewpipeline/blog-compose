@@ -11,7 +11,8 @@
 #   POSTGRES_PASSWORD, BLOG_PORT (8080), IMAGES_PORT (8081),
 #   BLOG_SERVER_REF / IMAGES_PROCESSOR_REF (main), FEATURES, TITLE, DESCRIPTION,
 #   KEYWORDS, TELEGRAM_BOT_TOKEN, TELEGRAM_BOT_LOGIN, YANDEX_CLIENT_ID, OPENAI_API_KEY,
-#   RABBIT_URL, LOGO_URL, THEME, COLOR_*.
+#   RABBIT_URL, LOGO_URL, FAVICON_URL, ICON512_MASKABLE_URL, ICON512_ROUNDED_URL,
+#   THEME, COLOR_*.
 #
 # Usage: put the vars in a .env file next to this file (or export them), then:
 #   docker compose up --build -d
@@ -46,7 +47,7 @@ services:
 
   images-processor:
     build:
-      context: https://github.com/tikitko/images-processor-service.git#${IMAGES_PROCESSOR_REF:-main}
+      context: https://github.com/brewpipeline/images-processor-service.git#${IMAGES_PROCESSOR_REF:-main}
       args:
         DOMAIN: ${IMAGES_DOMAIN:?IMAGES_DOMAIN is required}
         SCHEME: ${SCHEME:-https}
@@ -64,7 +65,7 @@ services:
 
   blog-server:
     build:
-      context: https://github.com/tikitko/blog-server.git#${BLOG_SERVER_REF:-main}
+      context: https://github.com/brewpipeline/blog-server.git#${BLOG_SERVER_REF:-main}
       args:
         DOMAIN: ${BLOG_DOMAIN:?BLOG_DOMAIN is required}
         SCHEME: ${SCHEME:-https}
@@ -72,10 +73,13 @@ services:
         TITLE: ${TITLE:-TIKITKO blog}
         DESCRIPTION: '${DESCRIPTION:-Блог от «гиков» для «гиков», говорим на темы, начиная с программирования и компьютерной графики, заканчивая играми и алкогольными посиделками в одиночестве.}'
         KEYWORDS: '${KEYWORDS:-tikitko, блог, программирование, ПО, код, Swift, Rust, компьютерная графика, верстка, алкоголь, игры}'
-        ACCORDION_JSON: '[{"title":"О блоге","body":"<strong>TIKITKO blog</strong> - блог от «гиков» для «гиков», говорим на темы, начиная с программирования и компьютерной графики, заканчивая играми и алкогольными посиделками в одиночестве. 🤫"},{"title":"Об авторах","body":"Главным автором являюсь я - <a href=\"https://about.tikitko.dev\">Никита</a>, но иногда тут будут появляться и умные люди, которых я смог уломать что-то написать! 🤑"},{"title":"Исходный код","body":"<a href=\"https://github.com/tikitko/blog-ui\">Исходный код</a> блога полностью открыт и может быть использован с учетом лицензии MIT. Будем рады вашему вкладу! ⛵"}]'
+        ACCORDION_JSON: '[{"title":"О блоге","body":"<strong>TIKITKO blog</strong> - блог от «гиков» для «гиков», говорим на темы, начиная с программирования и компьютерной графики, заканчивая играми и алкогольными посиделками в одиночестве. 🤫"},{"title":"Об авторах","body":"Главным автором являюсь я - <a href=\"https://about.tikitko.dev\">Никита</a>, но иногда тут будут появляться и умные люди, которых я смог уломать что-то написать! 🤑"},{"title":"Исходный код","body":"<a href=\"https://github.com/brewpipeline/blog-ui\">Исходный код</a> блога полностью открыт и может быть использован с учетом лицензии MIT. Будем рады вашему вкладу! ⛵"}]'
         TELEGRAM_BOT_LOGIN: ${TELEGRAM_BOT_LOGIN:-}
         YANDEX_CLIENT_ID: ${YANDEX_CLIENT_ID:-}
-        LOGO_URL: ${LOGO_URL:-}
+        LOGO_URL: ${LOGO_URL:-https://storage.tikitko.dev/logo.svg}
+        FAVICON_URL: ${FAVICON_URL:-https://storage.tikitko.dev/favicon.ico}
+        ICON512_MASKABLE_URL: ${ICON512_MASKABLE_URL:-https://storage.tikitko.dev/icon512_maskable.png}
+        ICON512_ROUNDED_URL: ${ICON512_ROUNDED_URL:-https://storage.tikitko.dev/icon512_rounded.png}
         THEME: ${THEME:-}
         COLOR_PRIMARY_BG: ${COLOR_PRIMARY_BG:-}
         COLOR_BODY_BG: ${COLOR_BODY_BG:-}
