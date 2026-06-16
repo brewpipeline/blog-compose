@@ -25,6 +25,11 @@ x-logging: &logging
   options:
     max-size: "10m"
     max-file: "3"
+x-healthcheck: &healthcheck
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 30s
 
 services:
   postgres:
@@ -39,11 +44,8 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
+      <<: *healthcheck
       test: ["CMD-SHELL", "pg_isready -U postgres -d blog"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-      start_period: 10s
 
   images-processor:
     build:
@@ -61,6 +63,9 @@ services:
       - "${IMAGES_PORT:-8081}:80"
     volumes:
       - images-data:/images
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -sS -o /dev/null http://localhost:80/"]
     stop_grace_period: 20s
 
   blog-server:
@@ -103,6 +108,9 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null http://localhost:80/api/posts"]
     stop_grace_period: 30s
 
 networks:
