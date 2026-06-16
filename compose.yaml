@@ -16,6 +16,9 @@
 #
 # Usage: put the vars in a .env file next to this file (or export them), then:
 #   docker compose up --build -d
+#
+# Local dev (no TLS, everything on localhost):
+#   SCHEME=http BLOG_DOMAIN=localhost:8080 IMAGES_DOMAIN=localhost:8081 JWT_SECRET=devjwt IMAGES_HMAC_SECRET=devhmac docker compose up --build -d
 
 name: blog
 
